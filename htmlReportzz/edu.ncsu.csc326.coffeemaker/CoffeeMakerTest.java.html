@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CoffeeMakerTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CoffeeMakerTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">edu.ncsu.csc326.coffeemaker</a> &gt; <span class="el_source">CoffeeMakerTest.java</span></div><h1>CoffeeMakerTest.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2009,  Sarah Heckman, Laurie Williams, Dright Ho
+ * All Rights Reserved.
+ *
+ * Permission has been explicitly granted to the University of Minnesota
+ * Software Engineering Center to use and distribute this source for
+ * educational purposes, including delivering online education through
+ * Coursera or other entities.
+ *
+ * No warranty is given regarding this software, including warranties as
+ * to the correctness or completeness of this software, including
+ * fitness for purpose.
+ *
+ *
+ * Modifications
+ * 20171114 - Ian De Silva - Updated to comply with JUnit 4 and to adhere to
+ * 							 coding standards.  Added test documentation.
+ */
+package edu.ncsu.csc326.coffeemaker;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import edu.ncsu.csc326.coffeemaker.exceptions.InventoryException;
+import edu.ncsu.csc326.coffeemaker.exceptions.RecipeException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+
+import static org.junit.Assert.*;
+
+/**
+ * Unit tests for CoffeeMaker class.
+ *
+ * @author Sarah Heckman
+ */
+<span class="fc" id="L39">public class CoffeeMakerTest {</span>
+
+    /**
+     * The object under test.
+     */
+    private CoffeeMaker coffeeMaker;
+
+    // Sample recipes to use in testing.
+    private Recipe recipe1;
+    private Recipe recipe2;
+    private Recipe recipe3;
+    private Recipe recipe4;
+    private Recipe recipeEdit;
+
+
+<span class="fc" id="L54">    Inventory inv = new Inventory();</span>
+
+    // BEFORE METHOD
+
+    /**
+     * Initializes some recipes to test with and the {@link CoffeeMaker}
+     * object we wish to test.
+     *
+     * @throws RecipeException if there was an error parsing the ingredient
+     *                         amount when setting up the recipe.
+     */
+    @Before
+    public void setUp() throws RecipeException {
+<span class="fc" id="L67">        coffeeMaker = new CoffeeMaker();</span>
+
+        //Set up for r1
+
+<span class="fc" id="L71">        recipe1 = new Recipe();</span>
+<span class="fc" id="L72">        recipe1.setName(&quot;Coffee&quot;);</span>
+<span class="fc" id="L73">        recipe1.setAmtChocolate(&quot;0&quot;);</span>
+<span class="fc" id="L74">        recipe1.setAmtCoffee(&quot;3&quot;);</span>
+<span class="fc" id="L75">        recipe1.setAmtMilk(&quot;1&quot;);</span>
+<span class="fc" id="L76">        recipe1.setAmtSugar(&quot;1&quot;);</span>
+<span class="fc" id="L77">        recipe1.setPrice(&quot;50&quot;);</span>
+
+        //Set up for r2
+<span class="fc" id="L80">        recipe2 = new Recipe();</span>
+<span class="fc" id="L81">        recipe2.setName(&quot;Mocha&quot;);</span>
+<span class="fc" id="L82">        recipe2.setAmtChocolate(&quot;20&quot;);</span>
+<span class="fc" id="L83">        recipe2.setAmtCoffee(&quot;3&quot;);</span>
+<span class="fc" id="L84">        recipe2.setAmtMilk(&quot;1&quot;);</span>
+<span class="fc" id="L85">        recipe2.setAmtSugar(&quot;1&quot;);</span>
+<span class="fc" id="L86">        recipe2.setPrice(&quot;75&quot;);</span>
+
+        //Set up for r3
+<span class="fc" id="L89">        recipe3 = new Recipe();</span>
+<span class="fc" id="L90">        recipe3.setName(&quot;Latte&quot;);</span>
+<span class="fc" id="L91">        recipe3.setAmtChocolate(&quot;0&quot;);</span>
+<span class="fc" id="L92">        recipe3.setAmtCoffee(&quot;3&quot;);</span>
+<span class="fc" id="L93">        recipe3.setAmtMilk(&quot;3&quot;);</span>
+<span class="fc" id="L94">        recipe3.setAmtSugar(&quot;1&quot;);</span>
+<span class="fc" id="L95">        recipe3.setPrice(&quot;100&quot;);</span>
+
+        //Set up for r4
+<span class="fc" id="L98">        recipe4 = new Recipe();</span>
+<span class="fc" id="L99">        recipe4.setName(&quot;Hot Chocolate&quot;);</span>
+<span class="fc" id="L100">        recipe4.setAmtChocolate(&quot;4&quot;);</span>
+<span class="fc" id="L101">        recipe4.setAmtCoffee(&quot;0&quot;);</span>
+<span class="fc" id="L102">        recipe4.setAmtMilk(&quot;1&quot;);</span>
+<span class="fc" id="L103">        recipe4.setAmtSugar(&quot;1&quot;);</span>
+<span class="fc" id="L104">        recipe4.setPrice(&quot;65&quot;);</span>
+        //Set up for myRes1
+<span class="fc" id="L106">        recipeEdit = new Recipe();</span>
+<span class="fc" id="L107">        recipeEdit.setName(&quot;Editable&quot;);</span>
+<span class="fc" id="L108">        recipeEdit.setAmtChocolate(&quot;0&quot;);</span>
+<span class="fc" id="L109">        recipeEdit.setAmtCoffee(&quot;0&quot;);</span>
+<span class="fc" id="L110">        recipeEdit.setAmtMilk(&quot;0&quot;);</span>
+<span class="fc" id="L111">        recipeEdit.setAmtSugar(&quot;0&quot;);</span>
+<span class="fc" id="L112">        recipeEdit.setPrice(&quot;1&quot;);</span>
+
+<span class="fc" id="L114">    }</span>
+
+    /** addInventory TESTS
+     * Given a coffee maker with the default inventory
+     * When we add inventory with well-formed quantities
+     * Then we do not get an exception trying to read the inventory quantities.
+     *
+     * @throws InventoryException if there was an error parsing the quanity
+     *                            to a positive integer.
+     */
+    //OK Recipe
+    @Test
+    public void testAddInventory() throws InventoryException {
+<span class="nc" id="L127">        coffeeMaker.addInventory(&quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Given a coffee maker with the default inventory
+     * When we add inventory with malformed quantities (i.e., a negative
+     * quantity and a non-numeric string)
+     * Then we get an inventory exception
+     *
+     * @throws InventoryException if there was an error parsing the quanity
+     *                            to a positive integer.
+     */
+    //Negative Coffee
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionCoffee() throws InventoryException {
+<span class="nc" id="L142">        coffeeMaker.addInventory(&quot;-4&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L143">    }</span>
+
+    //Word Coffee
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionCoffee2() throws InventoryException {
+<span class="nc" id="L148">        coffeeMaker.addInventory(&quot;asdf&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L149">    }</span>
+    //Negative Milk
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionMilk() throws InventoryException {
+<span class="nc" id="L153">        coffeeMaker.addInventory(&quot;1&quot;, &quot;-1&quot;, &quot;1&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L154">    }</span>
+
+    //Word Milk
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionMilk2() throws InventoryException {
+<span class="nc" id="L159">        coffeeMaker.addInventory(&quot;1&quot;, &quot;asdf&quot;, &quot;1&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L160">    }</span>
+
+    //Negative Sugar
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionSugar() throws InventoryException {
+<span class="fc" id="L165">        coffeeMaker.addInventory(&quot;1&quot;, &quot;1&quot;, &quot;-1&quot;, &quot;1&quot;);</span>
+<span class="fc" id="L166">    }</span>
+
+    //Word Sugar
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionSugar2() throws InventoryException {
+<span class="nc" id="L171">        coffeeMaker.addInventory(&quot;1&quot;, &quot;1&quot;, &quot;asdf&quot;, &quot;1&quot;);</span>
+<span class="nc" id="L172">    }</span>
+
+    //Negative Chocolate
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionChocolate() throws InventoryException {
+<span class="nc" id="L177">        coffeeMaker.addInventory(&quot;1&quot;, &quot;1&quot;, &quot;0&quot;, &quot;-1&quot;);</span>
+<span class="nc" id="L178">    }</span>
+
+    //Word Chocolate
+    @Test(expected = InventoryException.class)
+    public void testAddInventoryExceptionChocolate2() throws InventoryException {
+<span class="nc" id="L183">        coffeeMaker.addInventory(&quot;1&quot;, &quot;1&quot;, &quot;0&quot;, &quot;asdf&quot;);</span>
+<span class="nc" id="L184">    }</span>
+
+    /**
+     * Inventory Setter TESTS
+     */
+
+    //Coffee setter
+    @Test
+    public void coffeeSetterTestNegative(){
+<span class="fc" id="L193">        inv.setCoffee(1);</span>
+<span class="fc" id="L194">        inv.setCoffee(-2);</span>
+<span class="fc" id="L195">        assertEquals(1,inv.getCoffee());</span>
+<span class="fc" id="L196">    }</span>
+
+    //Milk setter
+    @Test
+    public void milkSetterTestNegative(){
+<span class="fc" id="L201">        inv.setMilk(1);</span>
+<span class="fc" id="L202">        inv.setMilk(-2);</span>
+<span class="fc" id="L203">        assertEquals(1,inv.getMilk());</span>
+<span class="fc" id="L204">    }</span>
+
+    //Sugar setter
+    @Test
+    public void sugarSetterTestNegative(){
+<span class="fc" id="L209">        inv.setSugar(1);</span>
+<span class="fc" id="L210">        inv.setSugar(-2);</span>
+<span class="fc" id="L211">        assertEquals(1,inv.getSugar());</span>
+<span class="fc" id="L212">    }</span>
+
+    //Chocolate Setter
+    @Test
+    public void chocolateSetterTestNegative(){
+<span class="fc" id="L217">        inv.setChocolate(1);</span>
+<span class="fc" id="L218">        inv.setChocolate(-2);</span>
+<span class="fc" id="L219">        assertEquals(1,inv.getChocolate());</span>
+<span class="fc" id="L220">    }</span>
+
+    /**
+     * addRecipe TESTS
+     */
+
+    //Test OK Add Recipe
+    @Test
+    public void testAddRecipeOK() {
+<span class="fc" id="L229">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="nc" id="L230">        assertTrue(coffeeMaker.addRecipe(recipe1));</span>
+<span class="nc" id="L231">    }</span>
+
+    //Test addRecipe checking for existing names
+    @Test
+    public void testAddRecipeDublNames() {
+<span class="fc" id="L236">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L237">        assertFalse(coffeeMaker.addRecipe(recipe1));</span>
+<span class="fc" id="L238">    }</span>
+
+    //Test addRecipe book is full
+    @Test
+    public void testAddRecipeFullBook() {
+<span class="fc" id="L243">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L244">        coffeeMaker.addRecipe(recipe2);</span>
+<span class="fc" id="L245">        coffeeMaker.addRecipe(recipe3);</span>
+<span class="fc" id="L246">        coffeeMaker.addRecipe(recipe4);</span>
+<span class="fc" id="L247">        assertFalse(coffeeMaker.addRecipe(recipeEdit));</span>
+<span class="fc" id="L248">    }</span>
+
+    /**
+     * deleteRecipe TESTS
+     *
+     * @throws RecipeException
+     */
+
+    //Test OK Delete
+    @Test
+    public void testDeleteRecipes() throws RecipeException {
+<span class="fc" id="L259">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L260">        coffeeMaker.deleteRecipe(0);</span>
+<span class="nc" id="L261">        assertEquals(null, coffeeMaker.getRecipes()[0].getName());</span>
+
+<span class="nc" id="L263">    }</span>
+
+    //Test Delete Empty Book
+    @Test
+    public void testDeleteWithoutRecipes() {
+<span class="fc" id="L268">        assertEquals(null, coffeeMaker.deleteRecipe(0));</span>
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * EDIT RECIPE TESTS
+     */
+
+    //Test OK Edit
+    @Test
+    public void testEditRecipe() {
+<span class="fc" id="L278">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L279">        coffeeMaker.editRecipe(0, recipe2);</span>
+<span class="fc" id="L280">        assertEquals(recipe2.getName(), coffeeMaker.getRecipes()[0].getName());</span>
+<span class="fc" id="L281">    }</span>
+
+    //Test Edit Empty Book
+    @Test
+    public void testEditWithoutRecipe() {
+<span class="fc" id="L286">        assertEquals(null, coffeeMaker.editRecipe(0, recipe1));</span>
+<span class="fc" id="L287">    }</span>
+
+    /**
+     * BUY COFFEE TESTS
+     * /**
+     * Given a coffee maker with one valid recipe
+     * When we make coffee, selecting the valid recipe and paying more than
+     * the coffee costs
+     * Then we get the correct change back.
+     */
+
+    //Test OK Buy Coffee
+    @Test
+    public void testMakeCoffee() {
+<span class="fc" id="L301">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L302">        assertEquals(25, coffeeMaker.makeCoffee(0, 75));</span>
+<span class="fc" id="L303">    }</span>
+
+    /**
+     * INVENTORY TESTS
+     */
+
+    /**
+     * TESTS not enough ingredients for 2 coffee
+     */
+
+    //OK Coffee
+    @Test
+    public void testOKCoffee() throws RecipeException {
+<span class="fc" id="L316">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L317">        recipeEdit.setAmtCoffee(Integer.toString(inv.getCoffee()-1));</span>
+<span class="nc" id="L318">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="nc" id="L320">    }</span>
+
+    //Not enough Coffee
+    @Test
+    public void testMissingCoffee() throws RecipeException {
+<span class="fc" id="L325">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L326">        recipeEdit.setAmtCoffee(Integer.toString(inv.getCoffee() + 1));</span>
+<span class="fc" id="L327">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L329">    }</span>
+
+    //OK Chocolate
+    @Test
+    public void testOKChocolate() throws RecipeException {
+<span class="fc" id="L334">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L335">        recipeEdit.setAmtCoffee(Integer.toString(inv.getChocolate()-1));</span>
+<span class="nc" id="L336">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="nc" id="L338">    }</span>
+
+    //Not enough Chocolate
+    @Test
+    public void testMissingChocolate() throws RecipeException {
+<span class="fc" id="L343">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L344">        recipeEdit.setAmtChocolate(Integer.toString(inv.getChocolate() + 1));</span>
+<span class="fc" id="L345">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L347">    }</span>
+
+    //OK Sugar
+    @Test
+    public void testOKSugar() throws RecipeException {
+<span class="fc" id="L352">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L353">        recipeEdit.setAmtCoffee(Integer.toString(inv.getSugar()-1));</span>
+<span class="nc" id="L354">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="nc" id="L356">    }</span>
+
+    //Not enough Sugar
+    @Test
+    public void testMissingSugar() throws RecipeException {
+<span class="fc" id="L361">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L362">        recipeEdit.setAmtSugar(Integer.toString(inv.getSugar() + 1));</span>
+<span class="fc" id="L363">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L365">    }</span>
+
+    //OK Milk
+    @Test
+    public void testOKMilk() throws RecipeException {
+<span class="fc" id="L370">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L371">        recipeEdit.setAmtCoffee(Integer.toString(inv.getMilk()-1));</span>
+<span class="nc" id="L372">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="nc" id="L374">    }</span>
+
+    //Not enough Milk
+    @Test
+    public void testMissingMilk() throws RecipeException {
+<span class="fc" id="L379">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L380">        recipeEdit.setAmtMilk(Integer.toString(inv.getMilk() + 1));</span>
+<span class="fc" id="L381">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L383">    }</span>
+
+    //Not enough Coffee for two orders
+    @Test
+    public void testTwoOrdersCoffee() throws RecipeException {
+<span class="fc" id="L388">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L389">        recipeEdit.setAmtCoffee(Integer.toString(inv.getCoffee()/2+1));</span>
+
+<span class="fc" id="L391">        assertEquals(99, coffeeMaker.makeCoffee(0, 100));</span>
+<span class="nc" id="L392">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+<span class="nc" id="L393">    }</span>
+
+    //Not enough Chocolate for two orders
+    @Test
+    public void testTwoOrdersChocolate() throws RecipeException {
+<span class="fc" id="L398">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L399">        recipeEdit.setAmtChocolate(Integer.toString(inv.getChocolate()/2+1));</span>
+
+<span class="fc" id="L401">        assertEquals(99, coffeeMaker.makeCoffee(0, 100));</span>
+<span class="fc" id="L402">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L404">    }</span>
+
+    //Not enough Sugar for two orders
+    @Test
+    public void testTwoOrdersSugar() throws RecipeException {
+<span class="fc" id="L409">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L410">        recipeEdit.setAmtSugar(Integer.toString(inv.getSugar()/2+1));</span>
+
+<span class="fc" id="L412">        assertEquals(99, coffeeMaker.makeCoffee(0, 100));</span>
+<span class="fc" id="L413">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L415">    }</span>
+
+    //Not enough Milk for two orders
+    @Test
+    public void testTwoOrdersMilk() throws RecipeException {
+<span class="fc" id="L420">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L421">        recipeEdit.setAmtMilk(Integer.toString(inv.getMilk()/2+1));</span>
+
+<span class="fc" id="L423">        assertEquals(99, coffeeMaker.makeCoffee(0, 100));</span>
+<span class="fc" id="L424">        assertEquals(100, coffeeMaker.makeCoffee(0, 100));</span>
+
+<span class="fc" id="L426">    }</span>
+
+    /**
+     * Class CoffeeMaker
+     * makeCoffee TESTS
+     */
+
+    @Test
+    public void OkRecipeToPurchaseTest(){
+<span class="fc" id="L435">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L436">        assertEquals(100, coffeeMaker.makeCoffee(1, 100));</span>
+<span class="fc" id="L437">    }</span>
+
+
+    //missing recipe
+    @Test
+    public void noRecipeToPurchaseTest(){
+<span class="fc" id="L443">        assertEquals(100, coffeeMaker.makeCoffee(1, 100));</span>
+<span class="fc" id="L444">    }</span>
+
+    //not enough paid
+    @Test
+    public void notEnoughPaidTest(){
+<span class="fc" id="L449">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L450">        assertEquals(1, coffeeMaker.makeCoffee(0, 1));</span>
+<span class="fc" id="L451">    }</span>
+
+    /**
+     * Class CoffeeMaker
+     * checkInventory TEST
+     */
+
+    //checkInventory TEST
+    @Test
+    public void checkInventoryTest(){
+<span class="fc" id="L461">        assertEquals(coffeeMaker.checkInventory(), inv.toString());</span>
+<span class="fc" id="L462">    }</span>
+
+
+    /**
+     * Class Recipe
+     * Recipe Setters TESTS
+     * @throws RecipeException
+     */
+
+    //ok Coffee
+    @Test
+    public void testOkCoffee() throws RecipeException {
+<span class="fc" id="L474">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L475">        recipeEdit.setAmtCoffee(&quot;1&quot;);</span>
+<span class="fc" id="L476">        assertEquals(1, recipeEdit.getAmtCoffee());</span>
+<span class="fc" id="L477">    }</span>
+
+    //negative Coffee
+    @Test(expected = RecipeException.class)
+    public void testNegativeCoffee() throws RecipeException {
+<span class="fc" id="L482">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L483">        recipeEdit.setAmtCoffee(Integer.toString(-1));</span>
+<span class="nc" id="L484">    }</span>
+
+    //word Coffee
+    @Test(expected = RecipeException.class)
+    public void testWordCoffee() throws RecipeException {
+<span class="fc" id="L489">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L490">        recipeEdit.setAmtCoffee(&quot;asdf&quot;);</span>
+<span class="nc" id="L491">    }</span>
+
+    //ok Chocolate
+    @Test
+    public void testOkChocolate() throws RecipeException {
+<span class="fc" id="L496">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L497">        recipeEdit.setAmtChocolate(&quot;1&quot;);</span>
+<span class="fc" id="L498">        assertEquals(1, recipeEdit.getAmtChocolate());</span>
+<span class="fc" id="L499">    }</span>
+
+    //negative Chocolate
+    @Test(expected = RecipeException.class)
+    public void testNegativeChocolate() throws RecipeException {
+<span class="fc" id="L504">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L505">        recipeEdit.setAmtChocolate(Integer.toString(-1));</span>
+<span class="nc" id="L506">    }</span>
+
+    //word Chocolate
+    @Test(expected = RecipeException.class)
+    public void testWordChocolate() throws RecipeException {
+<span class="fc" id="L511">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L512">        recipeEdit.setAmtChocolate(&quot;asdf&quot;);</span>
+<span class="nc" id="L513">    }</span>
+
+    //ok Sugar
+    @Test
+    public void testOkSugar() throws RecipeException {
+<span class="fc" id="L518">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L519">        recipeEdit.setAmtSugar(&quot;1&quot;);</span>
+<span class="fc" id="L520">        assertEquals(1, recipeEdit.getAmtSugar());</span>
+<span class="fc" id="L521">    }</span>
+
+    //negative Sugar
+    @Test(expected = RecipeException.class)
+    public void testNegativeSugar() throws RecipeException {
+<span class="fc" id="L526">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L527">        recipeEdit.setAmtSugar(Integer.toString(-1));</span>
+<span class="nc" id="L528">    }</span>
+
+    //word Sugar
+    @Test(expected = RecipeException.class)
+    public void testWordSugar() throws RecipeException {
+<span class="fc" id="L533">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L534">        recipeEdit.setAmtSugar(&quot;asdf&quot;);</span>
+<span class="nc" id="L535">    }</span>
+
+    //ok Milk
+    @Test
+    public void testOkMilk() throws RecipeException {
+<span class="fc" id="L540">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L541">        recipeEdit.setAmtMilk(&quot;1&quot;);</span>
+<span class="fc" id="L542">        assertEquals(1, recipeEdit.getAmtMilk());</span>
+<span class="fc" id="L543">    }</span>
+
+    //negative Milk
+    @Test(expected = RecipeException.class)
+    public void testNegativeMilk() throws RecipeException {
+<span class="fc" id="L548">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L549">        recipeEdit.setAmtMilk(Integer.toString(-1));</span>
+<span class="nc" id="L550">    }</span>
+
+    //word Milk
+    @Test(expected = RecipeException.class)
+    public void testWordMilk() throws RecipeException {
+<span class="fc" id="L555">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L556">        recipeEdit.setAmtMilk(&quot;asdf&quot;);</span>
+<span class="nc" id="L557">    }</span>
+
+    //ok Price
+    @Test
+    public void testOkPrice() throws RecipeException {
+<span class="fc" id="L562">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L563">        recipeEdit.setPrice(&quot;1&quot;);</span>
+<span class="fc" id="L564">        assertEquals(1, recipeEdit.getPrice());</span>
+<span class="fc" id="L565">    }</span>
+
+    //negative Price
+    @Test(expected = RecipeException.class)
+    public void testNegativePrice() throws RecipeException {
+<span class="fc" id="L570">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L571">        recipeEdit.setPrice(Integer.toString(-1));</span>
+<span class="nc" id="L572">    }</span>
+
+    //word Price
+    @Test(expected = RecipeException.class)
+    public void testWordPrice() throws RecipeException {
+<span class="fc" id="L577">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="nc" id="L578">        recipeEdit.setPrice(&quot;asdf&quot;);</span>
+<span class="nc" id="L579">    }</span>
+
+    //empty Name
+    @Test
+    public void testEmptyName(){
+<span class="fc" id="L584">        coffeeMaker.addRecipe(recipeEdit);</span>
+<span class="fc" id="L585">        recipeEdit.setName(null);</span>
+<span class="fc" id="L586">    }</span>
+
+    /**
+     * Class Main
+     */
+
+    /**
+     * Class Recipe
+     * Questionable TESTS
+     */
+
+    //test hashCode
+    @Test
+    public void testHashCodeBranch(){
+<span class="fc" id="L600">        assertEquals(recipe1.hashCode(),recipe1.hashCode());</span>
+<span class="fc" id="L601">    }</span>
+    //test equals
+    @Test
+    public void testEqualsBranch(){
+<span class="fc" id="L605">        coffeeMaker.addRecipe(recipe1);</span>
+<span class="fc" id="L606">        assertNotEquals(inv, recipe1);</span>
+<span class="fc" id="L607">    }</span>
+
+
+    /**Main TESTS
+     *
+     */
+
+    @Test
+    public void testMain(){
+<span class="fc" id="L616">        String input = &quot;name\n1\n1\n1\n&quot;;</span>
+<span class="fc" id="L617">        InputStream inputStream = new ByteArrayInputStream(input.getBytes());</span>
+<span class="fc" id="L618">        System.setIn(inputStream);</span>
+
+<span class="fc" id="L620">        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
+<span class="fc" id="L621">        System.setOut(new PrintStream(outputStream));</span>
+
+<span class="fc" id="L623">        String expectedOutput = &quot;&quot;;</span>
+
+
+<span class="fc" id="L626">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
